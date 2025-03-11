@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cook & Bake Game Randomizer</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f7f7f7; }
+    h1, h2 { text-align: center; }
+    .section { margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px; max-width: 600px; margin-left: auto; margin-right: auto; }
+    button { padding: 10px 20px; margin: 5px; font-size: 16px; }
+    select { padding: 8px; font-size: 16px; }
+    .result { font-size: 18px; margin-top: 10px; padding: 10px; background: #e2e2e2; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <h1>Cook & Bake Game Randomizer</h1>
+
+  <div class="section">
+    <h2>Step 1: Choose Your Game Type</h2>
+    <label for="gameType">Game Type:</label>
+    <select id="gameType">
+      <option value="cook">Cook-Off</option>
+      <option value="bake">Bake-Off</option>
+      <option value="both">Both</option>
+    </select>
+  </div>
+
+  <div class="section">
+    <h2>Step 2: Choose Your Game Style</h2>
+    <label for="gameStyle">Game Style:</label>
+    <select id="gameStyle">
+      <option value="recipe">Recipe</option>
+      <option value="noRecipe">No Recipe</option>
+      <option value="team">Team</option>
+      <option value="individual">Individual</option>
+    </select>
+  </div>
+
+  <div class="section">
+    <h2>Step 3: Use a Category Rule?</h2>
+    <button id="rollCategoryYes">Yes, roll category rule</button>
+    <button id="rollCategoryNo">No, skip category rule</button>
+    <div id="categoryResult" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>Step 4: Roll Individual Twist</h2>
+    <button id="rollIndividual">Roll Twist</button>
+    <div id="individualResult" class="result"></div>
+    <button id="revealSecret" style="display:none;">Reveal Secret</button>
+  </div>
+
+  <script>
+    // Sample data arrays
+    const categoryRules = [
+      "Category: Only use local ingredients.",
+      "Category: Prepare the dish as a fusion of two cultures.",
+      "SECRET... THREE QUARTERS: Create a dish that transforms a traditional recipe halfway through."
+    ];
+
+    const individualTwists = [
+      { text: "Use only one hand for the entire dish.", secret: false },
+      { text: "SECRET... halfway: Incorporate a mystery ingredient revealed at the halfway mark.", secret: true, placeholder: "SECRET... halfway" },
+      { text: "Plate your dish as if it were a work of art.", secret: false }
+    ];
+
+    // Variables to store selected secret twist (if any)
+    let currentSecretTwist = null;
+
+    // Utility function to get a random element from an array
+    function getRandomElement(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Roll Category Rule
+    document.getElementById("rollCategoryYes").addEventListener("click", function() {
+      let rule = getRandomElement(categoryRules);
+      // Check if the rule is a secret (by checking if it includes "SECRET")
+      if (rule.includes("SECRET")) {
+        document.getElementById("categoryResult").innerText = rule.split(":")[0] + ": [Secret rule will reveal later]";
+      } else {
+        document.getElementById("categoryResult").innerText = rule;
+      }
+    });
+
+    document.getElementById("rollCategoryNo").addEventListener("click", function() {
+      document.getElementById("categoryResult").innerText = "No category rule chosen.";
+    });
+
+    // Roll Individual Twist
+    document.getElementById("rollIndividual").addEventListener("click", function() {
+      let twist = getRandomElement(individualTwists);
+      if (twist.secret) {
+        document.getElementById("individualResult").innerText = twist.placeholder;
+        currentSecretTwist = twist;
+        document.getElementById("revealSecret").style.display = "inline-block";
+      } else {
+        document.getElementById("individualResult").innerText = twist.text;
+        currentSecretTwist = null;
+        document.getElementById("revealSecret").style.display = "none";
+      }
+    });
+
+    // Reveal Secret Twist
+    document.getElementById("revealSecret").addEventListener("click", function() {
+      if (currentSecretTwist) {
+        document.getElementById("individualResult").innerText = currentSecretTwist.text;
+        document.getElementById("revealSecret").style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>
